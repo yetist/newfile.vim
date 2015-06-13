@@ -1,0 +1,5 @@
+you should add this line in your ~/.vimrc like that:
+let g:author_name="yetist"
+let g:author_email="yetist@gmail.com"
+let g:author_url="http://yetist.osprg.org"
+let g:author_blog="http://blog.osprg.org"

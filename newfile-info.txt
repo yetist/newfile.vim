@@ -1,0 +1,9 @@
+{
+  "name" : "newfile",
+  "version" : "$Revision: 37 $",
+  "author" : "yetist <yetist@gmail.com>",
+  "maintainer" : "yetist <yetist@gmail.com>",
+  "repository" : {"type": "svn", "url": "http://gsnippet.googlecode.com/svn/trunk/vim-addons/newfile"},
+  "dependencies" : {},
+  "description" : "this repository generate new file."
+}
