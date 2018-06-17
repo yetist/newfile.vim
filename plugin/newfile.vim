@@ -26,13 +26,13 @@
 "[LICENSE] [_H_] [DESCRIPTION] [COPYRIGHT] [AUTHOR] [BASENAME] [FILENAME]
 "[YEAR] [DATE] [EXTNAME] [EMAIL]
 "
-if has("autocmd")
-        augroup newfile 
-                autocmd BufNewFile *.*  exec("py newfile()")
-        augroup END
-endif " has("autocmd")
+"
+if !has('python')
+	finish
+endif
 
-python <<EOF
+function! CreateNewFile()
+python << EOF
 # -*- coding: utf-8 -*-
 import vim, os, time
 
@@ -139,7 +139,7 @@ def get_author():
     if vim.eval("exists('g:author_name')") == "1":
         ret["name"] = vim.eval("g:author_name")
     else:
-        ret["name"] = os.getlogin()
+        ret["name"] = os.environ['USER']
     if vim.eval("exists('g:author_email')") == "1":
         ret["email"] = vim.eval("g:author_email")
     else:
@@ -154,8 +154,14 @@ def get_author():
         ret["blog"]= "http://none"
     return ret
 
+def write_header(lines):
+    vim.current.buffer[0:0] = lines.splitlines()
+
+def write_tail(lines):
+    for line in lines.splitlines():
+        vim.current.buffer.append(line)
+
 def newfile():
-    global GPL, HEAD, TAIL, DESCRIPTION, COPYRIGHT
     author = get_author()
     info={}
     info["author"] = author["name"]
@@ -168,11 +174,11 @@ def newfile():
     info["_h_"] = "__"+"_".join(info["basename"].upper().split("-"))+"_H__"
 
     for k in info.keys():
-        COPYRIGHT = COPYRIGHT.replace("["+k.upper()+"]", info[k])
+        COPYRIGHT.replace("["+k.upper()+"]", info[k])
     info["copyright"] = COPYRIGHT
 
     for k in info.keys():
-        DESCRIPTION = DESCRIPTION.replace("["+k.upper()+"]", info[k])
+        DESCRIPTION.replace("["+k.upper()+"]", info[k])
     info["description"] = DESCRIPTION
 
     #########################################################################
@@ -195,10 +201,15 @@ def newfile():
             TAIL[info["extname"]] = TAIL[info["extname"]].replace("["+k.upper()+"]", info[k])
         write_tail(TAIL[info["extname"]])
 
-def write_header(lines):
-    vim.current.buffer[0:0] = lines.splitlines()
+if __name__=="__main__":
+    newfile()
+EOF
+endfunc
 
-def write_tail(lines):
-    for line in lines.splitlines():
-        vim.current.buffer.append(line)
+command! -nargs=0 NewFile call CreateNewFile()
 
+if has("autocmd")
+        augroup newfile 
+                autocmd BufNewFile *.*  exec("NewFile")
+        augroup END
+endif " has("autocmd")
