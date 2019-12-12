@@ -2,18 +2,18 @@
 " Summary: This is plugin for vim to autogen the new file.
 " Author: yetist <yetist@gmail.com>
 " URL: http://gsnippet.googlecode.com/svn/trunk/vim-plugins/newfile.vim
-" License: 
-" 
+" License:
+"
 " This program is free software; you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
 " the Free Software Foundation; either version 2 of the License, or
 " (at your option) any later version.
-" 
+"
 " This program is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU General Public License for more details.
-" 
+"
 " You should have received a copy of the GNU General Public License along
 " with this program; if not, write to the Free Software Foundation, Inc.,
 " 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -40,8 +40,7 @@ DESCRIPTION = "This file is part of ____"
 
 COPYRIGHT = "Copyright (C) [YEAR] [AUTHOR] <[EMAIL]>"
 
-GPL="""
-This program is free software; you can redistribute it and/or modify
+GPL="""This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
@@ -60,7 +59,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 HEAD = {}
 TAIL = {}
 
-HEAD[".c"] = """/* vi: set sw=4 ts=4 wrap ai: */
+HEAD[".c"] = """/* vi: set sw=4 ts=4 sts=4 expandtab wrap ai: */
 /*
  * [FILENAME]: [DESCRIPTION]
  *
@@ -69,15 +68,10 @@ HEAD[".c"] = """/* vi: set sw=4 ts=4 wrap ai: */
 [LICENSE]
  * */
 """
-TAIL[".c"]= """"""
-"""
-/*
-vi:ts=4:wrap:ai:expandtab
-*/
-"""
+TAIL[".c"]= ""
 
 HEAD[".h"] = HEAD[".c"] + """
-#ifndef [_H_] 
+#ifndef [_H_]
 #define [_H_]  1
 
 G_BEGIN_DECLS
@@ -90,7 +84,7 @@ G_END_DECLS
 #endif /* [_H_] */
 """ + TAIL[".c"]
 
-HEAD[".m"] = """/* vi: set sw=4 ts=4 wrap ai: */
+HEAD[".m"] = """/* vi: set sw=4 ts=4 sts=4 expandtab wrap ai: */
 /*
  * [FILENAME]: [DESCRIPTION]
  *
@@ -111,7 +105,7 @@ HEAD[".py"] = """#! /usr/bin/env python
 # FileName: [FILENAME]
 
 "[DESCRIPTION]"
- 
+
 __author__   = "[AUTHOR]"
 __copyright__= "[COPYRIGHT]"
 __license__  = \"\"\"[LICENSE]\"\"\"
@@ -126,7 +120,7 @@ HEAD[".vim"] ="""" File: [FILENAME]
 " Summary: This is a plugin for vim to ...
 " Author: [AUTHOR] <[EMAIL]>
 " URL: [URL]
-" License: 
+" License:
 [LICENSE]
 " Version: [DATE]
 " Usage: do :
@@ -183,8 +177,8 @@ def newfile():
 
     #########################################################################
 
-    c_gpl = "\n".join([" * " + i for i in GPL.splitlines()])
-    vim_gpl = "\n".join(["\" " + i for i in GPL.splitlines()])
+    c_gpl = "\n".join([" * " + i for i in GPL.splitlines()]).replace("\n * \n","\n *\n")
+    vim_gpl = "\n".join(["\" " + i for i in GPL.splitlines()]).replace("\" \n","\"\n")
     if info["extname"] == ".c" or info["extname"] == ".h" or info["extname"] == ".m":
         info["license"] = c_gpl
     elif info["extname"] == ".vim":
@@ -209,7 +203,7 @@ endfunc
 command! -nargs=0 NewFile call CreateNewFile()
 
 if has("autocmd")
-        augroup newfile 
+        augroup newfile
                 autocmd BufNewFile *.*  exec("NewFile")
         augroup END
 endif " has("autocmd")
